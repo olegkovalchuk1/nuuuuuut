@@ -1,0 +1,125 @@
+* {
+    box-sizing: border-box;
+}
+
+img,
+iframe {
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: serif;
+    margin:0;
+    background-color: #fffcee;
+}
+
+.logo {
+    font-family: 'Karantina', cursive;
+    font-size: 48px;
+    font-weight: 700;
+    color: #0097C1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 60px;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #0097C1;
+}
+
+nav a.active {
+    color: #0097C1;
+}
+
+nav a.stats-link {
+    color: #ffffff;
+    background-color: #0097C1;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+nav a.stats-link:hover {
+    color: #ffffff;
+    background-color: #00789b;
+}
+
+.page-header{
+    letter-spacing: 2px;
+    margin-left: 60px;
+    font-family: 'Montserrat', sans-serif; 
+    font-size: clamp(48px, 10vw, 90px);
+    font-weight: 700;
+    color: #fffcee; /* Встановіть колір фону вашої сторінки */
+    -webkit-text-stroke: 6px #0097C1; /* Збільште вдвічі, бо половина сховається */
+    paint-order: stroke fill;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column; /* Ставимо кнопки в стовпчик */
+    gap: 15px;               /* Відступ між кнопками */
+    padding-left: 60px;      /* Той самий відступ зліва, як у логотипа */
+    margin-top: 30px;        /* Відступ від заголовка */
+    width: fit-content;      /* Контейнер підлаштовується під ширину кнопок */
+}
+
+.nav-btn {
+    background-color: #f0f0f0; /* Світло-сірий фон як на фото */
+    border: none;
+    color: #0097C1;           /* Блакитний текст */
+    padding: 15px 40px;       /* Збільшуємо розмір (внутрішні відступи) */
+    font-size: 18px;          /* Робимо шрифт більшим */
+    font-weight: 500;
+    text-align: left;         /* Текст по лівому краю всередині кнопки */
+    border-radius: 5px;       /* Легке закруглення */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 180px;         /* Однакова ширина для всіх кнопок */
+}
+
+.nav-btn:hover {
+    background-color: #0097C1;
+    color: white;             /* Зміна кольору при наведенні */
+}
+
+hr {
+    margin: 20px 0;
+    width: 100%;
+    border: 1px solid #0097C1;
+}
+
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}

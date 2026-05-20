@@ -1,0 +1,136 @@
+* {
+    box-sizing: border-box;
+}
+
+img,
+iframe {
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+body {
+    font-family: serif;
+    margin:0;
+    background-color: #fffcee;
+}
+
+.logo {
+    font-family: 'Karantina', cursive;
+    font-size: 48px;
+    font-weight: 700;
+    color: #0097C1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 60px;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #0097C1;
+}
+
+nav a.active {
+    color: #0097C1;
+}
+
+.container {
+    display: flex;
+}
+
+/* ЛІВА ЧАСТИНА */
+.left {
+    width: 100%;
+    max-width: 700px;
+    padding: 40px;
+}
+
+h1 {
+    letter-spacing: 2px;
+    margin-left: 60px;
+    font-family: 'Montserrat', sans-serif; 
+    font-size: clamp(48px, 10vw, 90px);
+    font-weight: 700;
+    color: #fffcee; /* Встановіть колір фону вашої сторінки */
+    -webkit-text-stroke: 6px #0097C1; /* Збільште вдвічі, бо половина сховається */
+    paint-order: stroke fill;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.question {
+    position: relative;      
+    padding-left: 25px; 
+    margin-bottom: 30px;
+    font-size: 16px;
+    font-family: 'Jost', sans-serif;
+}
+
+.question::before {
+  content: '⭢';             
+  color: #0097C1;     
+  position: absolute;
+  left: 0;                 
+  top: 0;
+  font-size: 18px;          
+}
+
+.data-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+.data-inputs input{
+    width:91%;
+    padding:12px;
+    padding-right:15px;
+    background:#eee;
+    border:none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Jost', sans-serif;
+}
+
+.gender-inputs { 
+    position: relative;      
+    padding-left: 25px; 
+    margin-bottom: 30px;
+    font-size: 16px;
+    font-family: 'Jost', sans-serif;
+}
+
+.p1 {
+    position: relative;      
+    padding-left: 25px; 
+    margin-bottom: 10px;
+
+    font-size: 20px;
+    font-family: 'Jost', sans-serif;
+    color: #0097C1; 
+}
+
+label {
+    display: block;
+    margin: 5px 0;
+}
+
+.btn {
+    background-color: #0097C1;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white; 
+    
+}
+

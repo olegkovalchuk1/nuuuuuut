@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сповіщення</title>
+    <link rel="stylesheet" href="/static/notifications.css">
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="logo">NutFit</div>
+    <nav>
+        <a href="/profile/" id="golovna">Головна</a>
+        <a href="/login/" id="uvijty">Увійти / Зареєструватися</a>
+        <a href="/dashboard/" id="statistika">Статистика</a>
+        <a href="/profile/" id="osobistiy-kabinet">Особистий кабінет</a>
+        <a href="/pages/exercise/" id="trenuvannya">Тренування</a>
+        <a href="/notifications/" class="active" id="spovishennya">Сповіщення</a>
+    </nav>
+</header>
+
+<main>
+    <div class="block">
+        <div class="block-header" onclick="toggleBlock(this)">
+            <span>→</span>
+            <h3>УСІ</h3>
+        </div>
+        <div class="block-content" id="all"></div>
+    </div>
+
+    <div class="block">
+        <div class="block-header" onclick="toggleBlock(this)">
+            <span>→</span>
+            <h3>ВАЖЛИВІ</h3>
+        </div>
+        <div class="block-content" id="important"></div>
+    </div>
+
+    <div class="block">
+        <div class="block-header" onclick="toggleBlock(this)">
+            <span>→</span>
+            <h3>НЕПРОЧИТАНІ</h3>
+        </div>
+        <div class="block-content" id="unread"></div>
+    </div>
+</main>
+
+<script src="/static/notifications.js"></script>
+</body>
+</html>

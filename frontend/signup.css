@@ -1,0 +1,194 @@
+* {
+    box-sizing: border-box;
+}
+
+img,
+iframe {
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+body{
+    font-family: serif;
+    margin:0;
+    background-color: #fffcee;
+}
+
+.logo {
+    font-family: 'Karantina', cursive;
+    font-size: 48px;
+    font-weight: bold;
+    color: #0097C1;
+}
+
+header{
+    display:flex;
+    justify-content:space-between;
+    padding:20px 60px;
+}
+
+nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #0097C1;
+}
+
+nav .active {
+    color: #0097C1;
+}
+
+main{
+    width:400px;
+    margin:80px auto;
+}
+
+.login-form{
+    display:flex;
+    flex-direction:column;
+}
+
+.login-form input:not([type="checkbox"]) {
+    padding:12px;
+    margin-bottom:25px;
+    background:#eee;
+    border:none;
+    border-radius: 10px;
+}
+
+.password-box{
+    position:relative;
+    margin-bottom:20px;
+}
+
+.password-box input{
+    width:100%;
+    padding:12px;
+    padding-right:25px;
+    background:#eee;
+    border:none;
+}
+
+.eye{
+    position:absolute;
+    right:12px;
+    top:30%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:18px;
+}
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.remember input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.remember span {
+    font-size: 18px;
+}
+
+button{
+    padding:12px;
+    margin-bottom:15px;
+    border:none;
+    color: #0097C1
+}
+
+.login{
+    background:#a9e1f1;
+    color:white;
+    border-radius: 10px;
+}
+
+.divider {
+    border: none;
+    height: 2px;
+    background-color: #0097C1; /* бірюзовий */
+    width: 120%;
+    margin: 20px 0;
+}
+
+.register{
+    background:#a9e1f1;
+    color:white;
+    border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav a {
+        margin-left: 0;
+        font-size: 14px;
+    }
+
+    .logo {
+        font-size: 42px;
+    }
+
+    main {
+        width: 100%;
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .login-form input,
+    .password-box input {
+        width: 100%;
+    }
+
+    .password-box {
+        width: 100%;
+    }
+
+    .divider {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+        font-size: 15px;
+    }
+
+    .remember {
+        justify-content: flex-start;
+    }
+
+    .remember span {
+        font-size: 16px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+}

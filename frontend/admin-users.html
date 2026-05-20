@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модерація користувачів | NutFit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f0e6; color: #333; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-family: 'Karantina', sans-serif; font-size: 42px; color: #0097C1; font-weight: bold; letter-spacing: 2px; }
+        .container { width: 90%; max-width: 1200px; margin: 40px auto; }
+        .topline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back { text-decoration: none; color: #0097C1; font-weight: 600; }
+        h2 { font-family: 'Karantina', sans-serif; font-size: 32px; letter-spacing: 1px; border-left: 5px solid #0097C1; padding-left: 15px; margin: 0; text-transform: uppercase; }
+        .table-wrapper { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #9fc7d6; text-transform: uppercase; font-size: 14px; }
+        .status-badge { padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .status-active { background: #d4edda; color: #27ae60; }
+        .status-blocked { background: #f8d7da; color: #e74c3c; }
+        button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .block-btn { background: #e74c3c; color: #fff; }
+        .unblock-btn { background: #27ae60; color: #fff; }
+        .empty-msg { padding: 30px; text-align: center; color: #888; }
+        .error { margin-top: 14px; color: #b00020; }
+        @media (max-width: 768px) {
+            header {flex-direction: column; align-items: flex-start;padding: 20px; gap: 10px; }
+            .container { width: 100%;margin: 20px auto; padding: 0 15px;}
+            .form-group { flex-direction: column; }
+            .add-btn { width: 100%; padding: 12px; }
+            .tabs { flex-direction: column; }
+            .tab-btn { width: 100%; border-radius: 12px; }
+            .admin-panel { padding: 20px; border-radius: 12px; }
+            table {min-width: 650px;}
+            .table-wrapper, .admin-panel {overflow-x: auto;}
+            .chart-container {overflow-x: auto;}
+            .bar-chart {min-width: 500px;}
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">NutFit</div>
+    <div style="font-family: 'Karantina'; font-size: 24px; color: #666;">ADMIN / USER MODERATION</div>
+</header>
+
+<div class="container">
+    <div class="topline">
+        <h2>Модерація користувачів</h2>
+        <a class="back" href="/admin-panel/">← Назад</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 80px;">ID</th>
+                <th>Ім'я</th>
+                <th>Email</th>
+                <th>Статус</th>
+                <th style="width: 150px; text-align: center;">Дія</th>
+            </tr>
+            </thead>
+            <tbody id="userTable"></tbody>
+        </table>
+    </div>
+    <div class="error" id="errorBox"></div>
+</div>
+
+<script>
+const API_BASE =
+    window.location.origin === "http://127.0.0.1:8000" || window.location.origin === "http://localhost:8000"
+        ? ""
+        : "http://127.0.0.1:8000";
+
+function getCookieValue(name) {
+    const cookies = document.cookie ? document.cookie.split(";") : [];
+    for (const cookie of cookies) {
+        const trimmed = cookie.trim();
+        if (trimmed.startsWith(`${name}=`)) {
+            return decodeURIComponent(trimmed.substring(name.length + 1));
+        }
+    }
+    return "";
+}
+
+function setError(message) {
+    const box = document.getElementById("errorBox");
+    if (box) box.textContent = message || "";
+}
+
+async function getAllUsers() {
+    const response = await fetch(`${API_BASE}/api/admin/users/`, { credentials: "include" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+}
+
+async function updateBlockStatus(id, blocked) {
+    const csrfToken = getCookieValue("csrftoken");
+    const response = await fetch(`${API_BASE}/api/admin/users/${id}/block/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            ...(csrfToken ? { "X-CSRFToken": csrfToken } : {}),
+        },
+        body: JSON.stringify({ blocked }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+}
+
+function renderTable(users) {
+    const tableBody = document.getElementById("userTable");
+    tableBody.innerHTML = "";
+
+    if (!users.length) {
+        tableBody.innerHTML = '<tr><td colspan="5" class="empty-msg">Список користувачів порожній</td></tr>';
+        return;
+    }
+
+    users.forEach((user) => {
+        const row = document.createElement("tr");
+        const statusClass = user.blocked ? "status-blocked" : "status-active";
+        const statusText = user.blocked ? "Заблокований" : "Активний";
+        const btnClass = user.blocked ? "unblock-btn" : "block-btn";
+        const btnText = user.blocked ? "Розблокувати" : "Заблокувати";
+
+        row.innerHTML = `
+            <td>#${user.id}</td>
+            <td><strong>${user.name || "-"}</strong></td>
+            <td>${user.email || "-"}</td>
+            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+            <td style="text-align: center;">
+                <button class="${btnClass}" data-id="${user.id}" data-next="${!user.blocked}">
+                    ${btnText}
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    tableBody.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+            const id = Number(btn.dataset.id);
+            const next = btn.dataset.next === "true";
+            try {
+                setError("");
+                await updateBlockStatus(id, next);
+                await refreshView();
+            } catch (error) {
+                setError("Не вдалося оновити статус користувача.");
+            }
+        });
+    });
+}
+
+async function refreshView() {
+    try {
+        setError("");
+        const data = await getAllUsers();
+        renderTable(data.results || []);
+    } catch (error) {
+        setError("Не вдалося завантажити користувачів.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", refreshView);
+</script>
+
+</body>
+</html>

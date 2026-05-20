@@ -1,0 +1,175 @@
+* {
+    box-sizing: border-box;
+}
+
+img,
+iframe {
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: serif;
+    margin:0;
+    background-color: #fffcee;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    font-family: 'Karantina', cursive;
+    font-size: 48px;
+    font-weight: 700;
+    color: #0097C1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 60px;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+nav a:hover {
+    color: #0097C1;
+}
+
+nav a.active {
+    color: #0097C1;
+}
+
+/* MAIN */
+main {
+    padding: 40px 80px;
+    flex: 1;
+}
+
+/* BLOCK */
+.block {
+    margin-bottom: 40px;
+}
+
+.block-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.block-header span {
+    color: #0097C1;
+    font-size: 20px;
+    margin-right: 10px;
+    transition: transform 0.3s;
+}
+
+.block-header h3 {
+    margin: 0;
+}
+
+/* CONTENT */
+.block-content {
+    display: none;
+    padding-left: 30px;
+}
+
+/* ACTIVE */
+.block.active .block-content {
+    display: block;
+}
+
+.block.active .block-header span {
+    transform: rotate(90deg);
+}
+
+/* CARDS */
+.card {
+    width: 400px;
+    height: 40px;
+    background: #cfcfcf;
+    border-radius: 20px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.card.read {
+    opacity: 0.5;
+}
+
+/* FOOTER LINE */
+footer {
+    width: 80%;
+    height: 2px;
+    background: #0097C1;
+    margin: 0 auto 20px;
+}
+
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        gap: 15px;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav a {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .logo {
+        font-size: 42px;
+    }
+
+    main {
+        padding: 25px 20px;
+    }
+
+    .block {
+        margin-bottom: 30px;
+    }
+
+    .block-header h3 {
+        font-size: 18px;
+    }
+
+    .block-content {
+        padding-left: 0;
+    }
+
+    .card {
+        width: 100%;
+        min-height: 42px;
+        height: auto;
+        padding: 10px 15px;
+        font-size: 15px;
+    }
+
+    footer {
+        width: calc(100% - 40px);
+    }
+}

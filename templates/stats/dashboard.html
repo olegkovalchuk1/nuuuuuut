@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: serif;
+            background-color: #fffcee;
+            color: #1f2937;
+        }
+
+        .logo {
+            font-family: "Karantina", cursive;
+            font-size: 48px;
+            font-weight: 700;
+            color: #0097c1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 60px;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: black;
+            font-weight: 600;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #0097c1;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px 32px;
+        }
+
+        h1 {
+            margin: 0 0 18px;
+            font-size: 32px;
+            line-height: 1.2;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            background: #ffffff;
+        }
+
+        .summary-title {
+            margin: 0 0 4px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .summary-value {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls label {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        select {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 14px;
+            background: #fff;
+            color: #1f2937;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            box-shadow: 0 8px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .meta {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+            min-height: 18px;
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 280px;
+        }
+
+        .error {
+            margin-top: 14px;
+            color: #ef4444;
+            font-size: 14px;
+            font-weight: 600;
+            min-height: 20px;
+        }
+
+        @media (max-width: 980px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+
+            nav {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav a {
+                margin: 0;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">NutFit</div>
+    <nav>
+        <a href="/profile/" id="golovna">Головна</a>
+        <a href="/login/" id="uvijty">Увійти / Зареєструватися</a>
+        <a href="/dashboard/" id="statistika" class="active">Статистика</a>
+        <a href="/profile/" id="osobistiy-kabinet">Особистий кабінет</a>
+        <a href="/pages/exercise/" id="trenuvannya">Тренування</a>
+        <a href="/notifications/" id="spovishennya">Сповіщення</a>
+    </nav>
+</header>
+
+<main class="page">
+    <h1>Дашборд статистики</h1>
+
+    <section class="summary-grid">
+        <article class="summary-card">
+            <p class="summary-title">Вага</p>
+            <p class="summary-value">{{ dashboard_summary.weight_kg }} кг</p>
+        </article>
+        <article class="summary-card">
+            <p class="summary-title">Ціль калорій</p>
+            <p class="summary-value">{{ dashboard_summary.calories_goal }}</p>
+        </article>
+        <article class="summary-card">
+            <p class="summary-title">Калорії сьогодні</p>
+            <p class="summary-value">{{ dashboard_summary.calories_today }}</p>
+        </article>
+        <article class="summary-card">
+            <p class="summary-title">Тренувань за тиждень</p>
+            <p class="summary-value">{{ dashboard_summary.workouts_week }}</p>
+        </article>
+    </section>
+
+    <section class="dashboard-header">
+        <div></div>
+        <div class="controls">
+            <label for="calories-period">Період калорій:</label>
+            <select id="calories-period">
+                <option value="week">7 днів</option>
+                <option value="month">30 днів</option>
+            </select>
+        </div>
+    </section>
+
+    <section class="grid">
+        <article class="card">
+            <h2>Калорії</h2>
+            <div class="meta" id="calories-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="calories-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Білки / Жири / Вуглеводи (сьогодні)</h2>
+            <div class="meta" id="macros-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="macros-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Спалені калорії за тиждень</h2>
+            <div class="meta" id="workouts-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="workouts-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Вода за тиждень</h2>
+            <div class="meta" id="water-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="water-chart"></canvas>
+            </div>
+        </article>
+    </section>
+
+    <p class="error" id="dashboard-error"></p>
+</main>
+
+{{ api_endpoints|json_script:"dashboard-endpoints" }}
+
+<script>
+    const charts = {};
+    const endpoints = JSON.parse(document.getElementById("dashboard-endpoints").textContent);
+
+    function setText(id, text) {
+        const node = document.getElementById(id);
+        if (node) node.textContent = text || "";
+    }
+
+    function setError(message) {
+        setText("dashboard-error", message);
+    }
+
+    function upsertChart(canvasId, config) {
+        if (charts[canvasId]) {
+            charts[canvasId].destroy();
+        }
+        const canvas = document.getElementById(canvasId);
+        charts[canvasId] = new Chart(canvas, config);
+    }
+
+    function buildAuthHeaders() {
+        const headers = {
+            "Accept": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+        };
+        const token =
+            localStorage.getItem("accessToken") ||
+            localStorage.getItem("authToken") ||
+            localStorage.getItem("token");
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+        return headers;
+    }
+
+    async function getJson(url) {
+        const response = await fetch(url, {
+            method: "GET",
+            credentials: "include",
+            headers: buildAuthHeaders(),
+        });
+        if (!response.ok) {
+            throw new Error(`Request failed: ${url} (${response.status})`);
+        }
+        return response.json();
+    }
+
+    function renderCaloriesChart(payload) {
+        upsertChart("calories-chart", {
+            type: "line",
+            data: { labels: payload.labels || [], datasets: payload.datasets || [] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+            },
+        });
+        setText("calories-meta", `Точок: ${(payload.labels || []).length}`);
+    }
+
+    function renderMacrosChart(payload) {
+        upsertChart("macros-chart", {
+            type: "doughnut",
+            data: { labels: payload.labels || [], datasets: payload.datasets || [] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom" } },
+            },
+        });
+        const p = payload.percentages || {};
+        setText("macros-meta", `Б: ${p.protein ?? 0}% | Ж: ${p.fat ?? 0}% | В: ${p.carbs ?? 0}%`);
+    }
+
+    function renderWorkoutsChart(payload) {
+        upsertChart("workouts-chart", {
+            type: "bar",
+            data: { labels: payload.labels || [], datasets: payload.datasets || [] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+            },
+        });
+        setText("workouts-meta", `${payload.week_start || ""} - ${payload.week_end || ""}`);
+    }
+
+    function renderWaterChart(payload) {
+        upsertChart("water-chart", {
+            type: "line",
+            data: { labels: payload.labels || [], datasets: payload.datasets || [] },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+            },
+        });
+        setText("water-meta", `${payload.week_start || ""} - ${payload.week_end || ""}`);
+    }
+
+    async function renderAll() {
+        setError("");
+        const period = document.getElementById("calories-period").value;
+        try {
+            const payload = await getJson(`${endpoints.dashboard}?period=${encodeURIComponent(period)}`);
+            renderCaloriesChart(payload.calories || {});
+            renderMacrosChart(payload.macros || {});
+            renderWorkoutsChart(payload.workouts || {});
+            renderWaterChart(payload.water || {});
+        } catch (error) {
+            setError(`Не вдалося завантажити статистику (${error.message}).`);
+            console.error(error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (typeof Chart === "undefined") {
+            setError("Chart.js не завантажився.");
+            return;
+        }
+
+        const periodSelect = document.getElementById("calories-period");
+        periodSelect.addEventListener("change", async () => {
+            await renderAll();
+        });
+
+        await renderAll();
+    });
+</script>
+</body>
+</html>

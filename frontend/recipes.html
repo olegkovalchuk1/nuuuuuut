@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>План харчування</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/lohit-tamil" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/recipes.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">NutFit</div>
+        <nav>
+            <a href="/profile/">ГОЛОВНА</a>
+            <a href="/login/">УВІЙТИ/ЗАРЕЄСТРУВАТИСЬ</a>
+            <a href="/profile/">ОСОБИСТИЙ КАБІНЕТ</a>
+            <a href="/pages/exercise/">ТРЕНУВАННЯ</a>
+            <a href="/notifications/">СПОВІЩЕННЯ</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="page-title">ПЛАН <br>ХАРЧУВАННЯ</h1>
+
+        <div class="water-tracker">
+            <div class="tracker-title">
+                <span class="arrow">→</span>
+                <p>ТРЕКЕР ВИПИТОЇ ВОДИ</p>
+            </div>
+            <div class="water-box">
+                <div class="water-grid">
+                    <!-- 15 стаканів -->
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                    <div class="cup"></div>
+                </div>
+                <button class="water-btn-main">1 стакан — 250 мл</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="calories-column">
+            <div class="calories-item">
+                <span>Білки</span>
+                <div class="inputs-group">
+                    <div class="field" id="norma-proteins-display">0</div>
+                    <div class="field" id="total-proteins">0</div>
+                </div>
+            </div>
+
+            <div class="calories-item">
+                <span>Жири</span>
+                <div class="inputs-group">
+                    <div class="field" id="norma-fats-display">0</div>
+                    <div class="field" id="total-fats">0</div>
+                </div>
+            </div>
+
+            <div class="calories-item">
+                <span>Вуглеводи</span>
+                <div class="inputs-group">
+                    <div class="field" id="norma-carbs-display">0</div>
+                    <div class="field" id="total-carbs">0</div>
+                </div>
+            </div>
+
+            <div class="calories-item">
+                <span>Калорії</span>
+                <div class="inputs-group">
+                    <div class="field" id="norma-calories-display">0</div>
+                    <div class="field" id="total-calories">0</div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="meals-container">
+
+            <div class="meal-card">
+                <h3>СНІДАНОК</h3>
+
+                <input type="text" placeholder="Назва">
+
+                <div class="macros">
+                    <input type="number" class="input-calories" placeholder="Калораж">
+                    <input type="number" class="input-proteins" placeholder="Білки">
+                    <input type="number" class="input-fats" placeholder="Жири">
+                    <input type="number" class="input-carbs" placeholder="Вуглеводи">
+                </div>
+
+                <button onclick="calculateTotal()">ОК</button>
+            </div>
+
+            <div class="meal-card">
+                <h3>ОБІД</h3>
+
+                <input type="text" placeholder="Назва">
+
+                <div class="macros">
+                    <input type="number" class="input-calories" placeholder="Калораж">
+                    <input type="number" class="input-proteins" placeholder="Білки">
+                    <input type="number" class="input-fats" placeholder="Жири">
+                    <input type="number" class="input-carbs" placeholder="Вуглеводи">
+                </div>
+
+                <button onclick="calculateTotal()">ОК</button>
+            </div>
+
+            <div class="meal-card">
+                <h3>ВЕЧЕРЯ</h3>
+
+                <input type="text" placeholder="Назва">
+
+                <div class="macros">
+                    <input type="number" class="input-calories" placeholder="Калораж">
+                    <input type="number" class="input-proteins" placeholder="Білки">
+                    <input type="number" class="input-fats" placeholder="Жири">
+                    <input type="number" class="input-carbs" placeholder="Вуглеводи">
+                </div>
+
+                <button onclick="calculateTotal()">ОК</button>
+            </div>
+
+            <div class="meal-card">
+                <h3>ПЕРЕКУСИ</h3>
+
+                <input type="text" placeholder="Назва">
+
+                <div class="macros">
+                    <input type="number" class="input-calories" placeholder="Калораж">
+                    <input type="number" class="input-proteins" placeholder="Білки">
+                    <input type="number" class="input-fats" placeholder="Жири">
+                    <input type="number" class="input-carbs" placeholder="Вуглеводи">
+                </div>
+
+                <button onclick="calculateTotal()">ОК</button>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="recipes">
+            <h1>РЕЦЕПТИ</h1>
+
+            <div class="search-box">
+                <input type="text" id="recipeSearch" placeholder="🔍 Шукати страву..." onkeyup="filterRecipes()">
+            </div>
+
+            <section class="breakfast-section">
+                <div class="category-header">
+                    <span class="arrow">→</span>
+                    <p>СНІДАНКИ</p>
+                </div>
+
+                <div class="recipe-grid">
+                    <div class="recipe-card">
+                        <img src="images/yogurt.jpg" alt="Йогурт з фруктами" class="recipe-img">
+                        <h3 class="recipe-title">Йогурт з фруктами та гранолою</h3>
+
+                            <div class="recipe-content">
+                                <h3 class="section-label">Склад:</h3>
+                                <ul class="ingredient-list">
+                                    <li>150 г натурального йогурту (2% жирності)</li>
+                                    <li>30 г граноли</li>
+                                    <li>1 банан (100 г)</li>
+                                    <li>50 г чорниці</li>
+                                    <li>50 г ожини</li>
+                                </ul>
+
+                                <h3 class="section-label">Поживність (приблизно):</h3>
+                                <ul class="nutrition-list">
+                                    <li>Калорії — ~350 ккал</li>
+                                    <li>Білки — ~12 г</li>
+                                    <li>Жири — ~7 г</li>
+                                    <li>Вуглеводи — ~60 г</li>
+                                </ul>
+                            </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/fruit-toast.jpg" alt="Тости з фруктами" class="recipe-img">
+                        <h3 class="recipe-title">Тости з фруктами</h3>
+
+                            <div class="recipe-content">
+
+                                <h3 class="section-label">Склад:</h3>
+                                <ul class="ingredient-list">
+                                    <li>2 шматки цільнозернового хліба</li>
+                                    <li>1 ст. л. арахісового масла (15 г)</li>
+                                    <li>50 г малини</li>
+                                    <li>50 г чорниці</li>
+                                    <li>½ банана (50 г)</li>
+                                </ul>
+
+                                <h3 class="section-label">Поживність (приблизно):</h3>
+                                <ul class="nutrition-list">
+                                    <li>Калорії — ~320 ккал</li>
+                                    <li>Білки — ~9 г</li>
+                                    <li>Жири — ~11 г</li>
+                                    <li>Вуглеводи — ~45 г</li>
+                                </ul>
+
+                            </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/avocado-omelette.jpg" alt="Авокадо-тост та омлет" class="recipe-img">
+                        <h3 class="recipe-title">Авокадо-тост, омлет і салат</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>1 шматок цільнозернового хліба (30 г)</li>
+                                <li>½ авокадо (70 г)</li>
+                                <li>2 яйця (100 г)</li>
+                                <li>50 г салату + 50 г помідорів чері</li>
+                                <li>1 ч. л. оливкової олії</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — ~420 ккал</li>
+                                <li>Білки — ~20 г</li>
+                                <li>Жири — ~28 г</li>
+                                <li>Вуглеводи — ~20 г</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/avocado-toast.jpg" alt="Авокадо-тост" class="recipe-img">
+                        <h3 class="recipe-title">Авокадо-тост з шинкою</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>2 шматки цільнозернового хліба (60 г)</li>
+                                <li>1/2 авокадо (70 г)</li>
+                                <li>50 г шинки (вареної або запеченої)</li>
+                                <li>Чорний перець, спеції</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — ~350 ккал</li>
+                                <li>Білки — ~18 г</li>
+                                <li>Жири — ~17 г</li>
+                                <li>Вуглеводи — ~30 г</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lunch-section">
+                <div class="category-header">
+                    <span class="arrow">→</span>
+                    <p>ОБІДИ</p>
+                </div>
+
+                <div class="recipe-grid">
+                    <div class="recipe-card">
+                        <img src="images/chicken-bowl.jpg" alt="Боул з куркою" class="recipe-img">
+                        <h3 class="recipe-title">Боул з куркою та овочами</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>120 г курячих котлет у паніровці</li>
+                                <li>50 г твердого сиру (натертий)</li>
+                                <li>70 г гуакамоле (авокадо + спеції)</li>
+                                <li>50 г квасолі</li>
+                                <li>50 г кукурудзи</li>
+                                <li>50 г помідорів</li>
+                                <li>50 г салату або капусти</li>
+                                <li>1 ст. л. сметани</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 520 ккал</li>
+                                <li>Білки — 32 г</li>
+                                <li>Жири — 22 г</li>
+                                <li>Вуглеводи — 45 г</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/quinoa-salad.jpg" alt="Салат з кіноа" class="recipe-img">
+                        <h3 class="recipe-title">Салат з кіноа та овочами</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>80 г відвареної кіноа</li>
+                                <li>100 г огірків</li>
+                                <li>100 г помідорів</li>
+                                <li>50 г авокадо</li>
+                                <li>1 ч. л. оливкової олії</li>
+                                <li>Лимонний сік, зелень</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 360 ккал</li>
+                                <li>Білки — 12 г</li>
+                                <li>Жири — 14 г</li>
+                                <li>Вуглеводи — 45 г</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="recipe-card">
+                        <img src="images/rice-chicken.jpg" alt="Куряче філе з рисом" class="recipe-img">
+                        <h3 class="recipe-title">Куряче філе з рисом і овочами</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>150 г курячого філе (запечене або варене)</li>
+                                <li>100 г відвареного рису</li>
+                                <li>100 г броколі</li>
+                                <li>50 г моркви</li>
+                                <li>1 ч. л. оливкової олії</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 420 ккал</li>
+                                <li>Білки — 32 г</li>
+                                <li>Жири — 10 г</li>
+                                <li>Вуглеводи — 50 г</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/burrito.jpg" alt="Курячий буріто" class="recipe-img">
+                        <h3 class="recipe-title">Курячий буріто з овочами</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>1 тортилья (60 г)</li>
+                                <li>100 г курячого філе (запечене або варене)</li>
+                                <li>50 г квасолі</li>
+                                <li>50 г кукурудзи</li>
+                                <li>50 г помідорів</li>
+                                <li>Листя салату, спеції</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 430 ккал</li>
+                                <li>Білки — 28 г</li>
+                                <li>Жири — 12 г</li>
+                                <li>Вуглеводи — 50 г</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="dinner-section">
+                <div class="category-header">
+                    <span class="arrow">→</span>
+                    <p>ВЕЧЕРІ</p>
+                </div>
+
+                <div class="recipe-grid">
+                    <div class="recipe-card">
+                        <img src="images/tuna-salad.jpg" alt="Салат з тунцем" class="recipe-img">
+                        <h3 class="recipe-title">Салат з тунцем та кукурудзою</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>80 г консервованого тунця у власному соку</li>
+                                <li>50 г кукурудзи</li>
+                                <li>2 варені яйця (100 г)</li>
+                                <li>50 г огірків</li>
+                                <li>50 г салату</li>
+                                <li>1 ст. л. майонезу або йогуртової заправки</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 390 ккал</li>
+                                <li>Білки — 28 г</li>
+                                <li>Жири — 15 г</li>
+                                <li>Вуглеводи — 25 г</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/chicken-eggs.jpg" alt="Курка з яйцем" class="recipe-img">
+                        <h3 class="recipe-title">Курка з яйцем та овочами</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>120 г курячого філе (варене або запечене)</li>
+                                <li>2 варені яйця (100 г)</li>
+                                <li>50 г огірків</li>
+                                <li>50 г салату</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 370 ккал</li>
+                                <li>Білки — 35 г</li>
+                                <li>Жири — 12 г</li>
+                                <li>Вуглеводи — 10 г</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="recipe-card">
+                        <img src="images/buckwheat.jpg" alt="Гречка з яйцем" class="recipe-img">
+                        <h3 class="recipe-title">Гречка з яйцем та овочами</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>100 г відвареної гречки</li>
+                                <li>2 варені яйця (100 г)</li>
+                                <li>50 г огірків</li>
+                                <li>50 г помідорів</li>
+                                <li>2 шматки хліба з сирним намазом</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 420 ккал</li>
+                                <li>Білки — 22 г</li>
+                                <li>Жири — 14 г</li>
+                                <li>Вуглеводи — 55 г</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <img src="images/potato.jpg" alt="Картопля з яйцем" class="recipe-img">
+                        <h3 class="recipe-title">Картопля з яйцем та огірками</h3>
+
+                        <div class="recipe-content">
+                            <h3 class="section-label">Склад:</h3>
+                            <ul class="ingredient-list">
+                                <li>150 г печеної або вареної картоплі</li>
+                                <li>2 варені яйця (100 г)</li>
+                                <li>50 г огірків</li>
+                                <li>Спеції, зелень</li>
+                            </ul>
+
+                            <h3 class="section-label">Поживність (приблизно):</h3>
+                            <ul class="nutrition-list">
+                                <li>Калорії — 350 ккал</li>
+                                <li>Білки — 14 г</li>
+                                <li>Жири — 10 г</li>
+                                <li>Вуглеводи — 50 г</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+    <script src="/static/recipes.js"></script>
+</body>
+
+</html>

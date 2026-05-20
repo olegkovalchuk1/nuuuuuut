@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адмін-панель</title>
+    <link rel="stylesheet" href="/static/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="logo">NutFit</div>
+    <nav>
+        <a href="/profile/" id="golovna">Головна</a>
+        <a href="/login/" id="uvijty">Увійти / Зареєструватися</a>
+        <a href="/dashboard/" id="statistika">Статистика</a>
+        <a href="/admin-panel/" class="active" id="osobistiy-kabinet-adm">Адмін</a>
+        <a href="/pages/exercise/" id="trenuvannya">Тренування</a>
+        <a href="/notifications/" id="spovishennya">Сповіщення</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="top-card">
+        <img src="/static/foods.jpg" alt="">
+        <div class="top-text">
+            <a href="/admin-panel/foods/" id="foods">Керування базою страв і тренувань</a>
+        </div>
+    </div>
+
+    <div class="bottom-grid">
+        <div class="card-small">
+            <img src="/static/acc.jpg" alt="">
+            <div class="text">
+                <a href="/admin-panel/users/" id="users">Модерація акаунтів</a>
+            </div>
+        </div>
+
+        <div class="card-big">
+            <img src="/static/graph.jpg" alt="">
+            <div class="text">
+                <a href="/admin-panel/analytics/" id="analytics">Системна аналітика</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/admin.js"></script>
+</body>
+</html>

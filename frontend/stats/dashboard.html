@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #0ea5e9;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: linear-gradient(180deg, #eff6ff 0%, var(--bg) 45%, #f8fafc 100%);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px 32px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            line-height: 1.2;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls label {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        select {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 14px;
+            background: #fff;
+            color: var(--text);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 8px;
+            min-height: 18px;
+        }
+
+        .chart-wrap {
+            position: relative;
+            height: 300px;
+        }
+
+        .error {
+            margin-top: 14px;
+            color: var(--danger);
+            font-size: 14px;
+            font-weight: 600;
+            min-height: 20px;
+        }
+
+        @media (max-width: 980px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrap {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="page">
+    <section class="header">
+        <h1>Дашборд статистики</h1>
+        <div class="controls">
+            <label for="calories-period">Період калорій:</label>
+            <select id="calories-period">
+                <option value="week">7 днів</option>
+                <option value="month">30 днів</option>
+            </select>
+        </div>
+    </section>
+
+    <section class="grid">
+        <article class="card">
+            <h2>Калорії</h2>
+            <div class="meta" id="calories-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="calories-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Білки / Жири / Вуглеводи (сьогодні)</h2>
+            <div class="meta" id="macros-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="macros-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Спалені калорії за тиждень</h2>
+            <div class="meta" id="workouts-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="workouts-chart"></canvas>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Вода за тиждень</h2>
+            <div class="meta" id="water-meta"></div>
+            <div class="chart-wrap">
+                <canvas id="water-chart"></canvas>
+            </div>
+        </article>
+    </section>
+
+    <p class="error" id="dashboard-error"></p>
+</main>
+
+<script>
+    const charts = {};
+
+    function setText(id, text) {
+        const node = document.getElementById(id);
+        if (node) {
+            node.textContent = text || "";
+        }
+    }
+
+    function setError(message) {
+        setText("dashboard-error", message);
+    }
+
+    function upsertChart(canvasId, config) {
+        if (charts[canvasId]) {
+            charts[canvasId].destroy();
+        }
+        const canvas = document.getElementById(canvasId);
+        charts[canvasId] = new Chart(canvas, config);
+    }
+
+    async function getJson(url) {
+        const response = await fetch(url, {
+            method: "GET",
+            credentials: "same-origin",
+            headers: {"X-Requested-With": "XMLHttpRequest"},
+        });
+
+        if (!response.ok) {
+            throw new Error(`Request failed: ${url} (${response.status})`);
+        }
+        return response.json();
+    }
+
+    async function renderCaloriesChart(period) {
+        const payload = await getJson(`/api/stats/calories?period=${encodeURIComponent(period)}`);
+        upsertChart("calories-chart", {
+            type: "line",
+            data: {
+                labels: payload.labels,
+                datasets: payload.datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+        setText("calories-meta", `Точок: ${payload.labels.length}`);
+    }
+
+    async function renderMacrosChart() {
+        const payload = await getJson("/api/stats/macros/today");
+        upsertChart("macros-chart", {
+            type: "doughnut",
+            data: {
+                labels: payload.labels,
+                datasets: payload.datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                    },
+                },
+            },
+        });
+
+        const p = payload.percentages || {};
+        setText(
+            "macros-meta",
+            `Б: ${p.protein ?? 0}% | Ж: ${p.fat ?? 0}% | В: ${p.carbs ?? 0}%`
+        );
+    }
+
+    async function renderWorkoutsChart() {
+        const payload = await getJson("/api/stats/workouts/week");
+        upsertChart("workouts-chart", {
+            type: "bar",
+            data: {
+                labels: payload.labels,
+                datasets: payload.datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+        setText("workouts-meta", `${payload.week_start} - ${payload.week_end}`);
+    }
+
+    async function renderWaterChart() {
+        const payload = await getJson("/api/stats/water/week");
+        upsertChart("water-chart", {
+            type: "line",
+            data: {
+                labels: payload.labels,
+                datasets: payload.datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+        setText("water-meta", `${payload.week_start} - ${payload.week_end}`);
+    }
+
+    async function renderAll() {
+        setError("");
+        const period = document.getElementById("calories-period").value;
+        try {
+            await Promise.all([
+                renderCaloriesChart(period),
+                renderMacrosChart(),
+                renderWorkoutsChart(),
+                renderWaterChart(),
+            ]);
+        } catch (error) {
+            setError("Не вдалося завантажити статистику. Перевір API та авторизацію.");
+            console.error(error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (typeof Chart === "undefined") {
+            setError("Chart.js не завантажився.");
+            return;
+        }
+
+        const periodSelect = document.getElementById("calories-period");
+        periodSelect.addEventListener("change", async () => {
+            try {
+                await renderCaloriesChart(periodSelect.value);
+            } catch (error) {
+                setError("Не вдалося оновити графік калорій.");
+                console.error(error);
+            }
+        });
+
+        await renderAll();
+    });
+</script>
+</body>
+</html>

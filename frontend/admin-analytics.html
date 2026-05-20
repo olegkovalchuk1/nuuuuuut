@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Системна аналітика | NutFit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f5f0e6; color: #333; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-family: 'Karantina', sans-serif; font-size: 42px; color: #0097C1; font-weight: bold; letter-spacing: 2px; }
+        .container { width: 90%; max-width: 1100px; margin: 40px auto; }
+        .topline { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .back { text-decoration: none; color: #0097C1; font-weight: 600; }
+        h2 { font-family: 'Karantina', sans-serif; font-size: 32px; letter-spacing: 1px; border-left: 5px solid #0097C1; padding-left: 15px; margin: 0; text-transform: uppercase; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px; }
+        .stat-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+        .stat-value { font-family: 'Karantina', sans-serif; font-size: 48px; color: #0097C1; margin: 10px 0; }
+        .stat-label { font-size: 14px; color: #777; text-transform: uppercase; font-weight: bold; }
+        .chart-container { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .chart-title { font-family: 'Karantina', sans-serif; font-size: 24px; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 10px; }
+        .bar-chart { display: flex; align-items: flex-end; justify-content: space-around; height: 220px; padding-top: 20px; border-bottom: 2px solid #ddd; }
+        .bar { width: 40px; background: #0097C1; border-radius: 4px 4px 0 0; position: relative; transition: height 0.6s; }
+        .bar::after { content: attr(data-label); position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 12px; white-space: nowrap; }
+        .error { margin-top: 14px; color: #b00020; }
+        @media (max-width: 768px) {
+        header { flex-direction: column; align-items: flex-start; padding: 20px; gap: 10px; }
+        .container { width: 100%; margin: 20px auto; padding: 0 15px; }
+        .form-group { flex-direction: column; }
+        .add-btn { width: 100%; padding: 12px; }
+        .tabs { flex-direction: column; }
+        .tab-btn { width: 100%; border-radius: 12px; }
+        .admin-panel { padding: 20px; border-radius: 12px; }
+        table { min-width: 650px; }
+        .table-wrapper, .admin-panel { overflow-x: auto; }
+        .chart-container { overflow-x: auto; }
+        .bar-chart { min-width: 500px; }
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">NutFit</div>
+    <div style="font-size: 14px; color: #666;">Admin Panel / Analytics</div>
+</header>
+
+<div class="container">
+    <div class="topline">
+        <h2>Системна аналітика</h2>
+        <a class="back" href="/admin-panel/">← Назад</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Користувачів</div><div class="stat-value" id="userCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">Страв у базі</div><div class="stat-value" id="foodCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">Тренувань</div><div class="stat-value" id="workoutCount">0</div></div>
+        <div class="stat-card"><div class="stat-label">Активність (%)</div><div class="stat-value" id="activityRate">0%</div></div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-title">
+            Активність за поточний тиждень
+            <span style="color: #27ae60; font-size: 16px;" id="trendLabel">+0%</span>
+        </div>
+        <div class="bar-chart" id="activityChart"></div>
+    </div>
+    <div class="error" id="errorBox"></div>
+</div>
+
+<script>
+const API_BASE =
+    window.location.origin === "http://127.0.0.1:8000" || window.location.origin === "http://localhost:8000"
+        ? ""
+        : "http://127.0.0.1:8000";
+
+function setError(message) {
+    const box = document.getElementById("errorBox");
+    if (box) box.textContent = message || "";
+}
+
+async function fetchAnalyticsData() {
+    const response = await fetch(`${API_BASE}/api/admin/analytics`, { credentials: "include" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+}
+
+function renderBars(labels, values) {
+    const chart = document.getElementById("activityChart");
+    chart.innerHTML = "";
+
+    const maxValue = Math.max(...values, 1);
+    labels.forEach((label, index) => {
+        const value = values[index] || 0;
+        const percent = Math.max(6, Math.round((value / maxValue) * 100));
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.dataset.label = label;
+        bar.style.height = `${percent}%`;
+        bar.title = `${label}: ${value}`;
+        chart.appendChild(bar);
+    });
+}
+
+async function updateUI() {
+    try {
+        setError("");
+        const data = await fetchAnalyticsData();
+        document.getElementById("userCount").innerText = data.userCount ?? 0;
+        document.getElementById("foodCount").innerText = data.foodCount ?? 0;
+        document.getElementById("workoutCount").innerText = data.workoutCount ?? 0;
+        document.getElementById("activityRate").innerText = data.activityRate ?? "0%";
+        document.getElementById("trendLabel").innerText = `${data.trend ?? "+0%"}`;
+        renderBars(data.weekLabels || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], data.weekActivity || [0,0,0,0,0,0,0]);
+    } catch (error) {
+        setError("Не вдалося завантажити аналітику.");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", updateUI);
+</script>
+
+</body>
+</html>

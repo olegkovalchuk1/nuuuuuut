@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід</title>
+    <link rel="stylesheet" href="/static/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="logo">NutFit</div>
+    <nav>
+        <a href="/profile/">Головна</a>
+        <a href="/login/">Увійти / Реєстрація</a>
+        <a href="/dashboard/" id="statistika">Статистика</a>
+        <a href="#" class="active">Особистий кабінет</a>
+        <a href="/pages/exercise/">Тренування</a>
+        <a href="/notifications/">Сповіщення</a>
+    </nav>
+</header>
+
+<main>
+    <h2>УВІЙТИ</h2>
+
+    <form class="login-form" id="login-form">
+        <label>USERNAME</label>
+        <input type="text" id="username" placeholder="Введіть username" required>
+
+        <label>ПАРОЛЬ</label>
+        <div class="password-box">
+            <input type="password" id="password" placeholder="Введіть пароль" required>
+            <span class="eye" onclick="togglePassword()">👁</span>
+        </div>
+
+        <div id="error-messages" style="color: red; margin-bottom: 10px;"></div>
+
+        <div class="remember">
+            <input type="checkbox">
+            <span>Запам'ятати мене</span>
+        </div>
+
+        <button type="submit" class="login" id="submit-btn">Увійти</button>
+
+        <hr class="divider">
+
+        <p>Не маю акаунту</p>
+        <button type="button" class="register" id="register-btn">Зареєструватися</button>
+    </form>
+</main>
+
+<script src="/static/login.js"></script>
+</body>
+</html>

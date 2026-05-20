@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Test</title>
+    <link rel="stylesheet" href="/static/test.css">
+    <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">NutFit</div>
+    <nav>
+        <a href="#">HOME</a>
+        <a href="#">LOGIN / SIGNUP</a>
+        <a href="#" class="active">PROFILE</a>
+        <a href="#">NOTIFICATIONS</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="left">
+        <h1>TEST</h1>
+
+        <form id="goal-test-form">
+            <div class="question">
+                <p>Your activity level</p>
+                <label><input type="radio" name="activity" value="1.2" data-level="low"> Low</label>
+                <label><input type="radio" name="activity" value="1.375" data-level="moderate"> Moderate</label>
+                <label><input type="radio" name="activity" value="1.55" data-level="medium"> Medium</label>
+                <label><input type="radio" name="activity" value="1.725" data-level="high"> High</label>
+            </div>
+
+            <div class="question">
+                <p>Your goal</p>
+                <label><input type="radio" name="goal" value="lose"> Lose weight</label>
+                <label><input type="radio" name="goal" value="maintain"> Maintain</label>
+                <label><input type="radio" name="goal" value="gain"> Gain muscle</label>
+            </div>
+
+            <p class="p1">ENTER YOUR DATA</p>
+            <div class="data-inputs">
+                <input type="number" id="age" placeholder="Age" min="1">
+                <input type="number" id="height" placeholder="Height (cm)" min="1" step="0.1">
+                <input type="number" id="weight" placeholder="Weight (kg)" min="1" step="0.1">
+            </div>
+
+            <div class="gender-inputs">
+                <p>Select your gender</p>
+                <label><input type="radio" name="gender" value="female"> Female</label>
+                <label><input type="radio" name="gender" value="male"> Male</label>
+            </div>
+
+            <button class="btn" id="finishTestBtn" type="button">FINISH TEST</button>
+        </form>
+    </div>
+
+    <div class="right">
+        <img src="images/N.jpg" class="letter n" alt="N">
+        <img src="images/F.jpg" class="letter f" alt="F">
+    </div>
+</div>
+
+</body>
+</html>
