@@ -130,6 +130,8 @@ class WorkoutQuerySet(models.QuerySet):
 
 
 class Workout(models.Model):
+    DEFAULT_BURNED_CALORIES = 200
+
     class Category(models.TextChoices):
         CARDIO = "cardio", "Cardio"
         STRENGTH = "strength", "Strength"
@@ -160,7 +162,7 @@ class Workout(models.Model):
         help_text="Optional video/photo URL for the workout.",
     )
     calories_burned = models.PositiveIntegerField(
-        default=0,
+        default=DEFAULT_BURNED_CALORIES,
         help_text="Estimated calories burned per workout session.",
     )
     created_by = models.ForeignKey(

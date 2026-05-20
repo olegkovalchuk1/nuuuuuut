@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.db.models import Count, IntegerField, Q, Sum, Value
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseForbidden, JsonResponse
@@ -14,6 +15,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from recipes.models import Recipe as ExternalRecipe
 
 from .models import (
+    BurnedCaloriesTracker,
     KcalTracker,
     Notification,
     Recipe as CoreRecipe,
@@ -22,6 +24,8 @@ from .models import (
     Workout,
     WorkoutTracker,
 )
+
+WORKOUT_DEFAULT_BURNED_CALORIES = 200
 
 
 def _date_range(start_date, days_count):
@@ -284,9 +288,39 @@ def mark_workout_done(request, workout_id):
         date=target_date,
     )
     if done:
-        WorkoutTracker.objects.get_or_create(user=request.user, workout=workout, date=target_date)
+        with transaction.atomic():
+            _, created = WorkoutTracker.objects.get_or_create(
+                user=request.user,
+                workout=workout,
+                date=target_date,
+            )
+            if created:
+                calories_to_add = workout.calories_burned or WORKOUT_DEFAULT_BURNED_CALORIES
+                stats_row, _ = BurnedCaloriesTracker.objects.select_for_update().get_or_create(
+                    user=request.user,
+                    date=target_date,
+                    defaults={"calories_burned": 0},
+                )
+                stats_row.calories_burned += calories_to_add
+                stats_row.save(update_fields=["calories_burned"])
     else:
-        tracker_qs.delete()
+        with transaction.atomic():
+            deleted_count, _ = tracker_qs.delete()
+            if deleted_count:
+                calories_to_remove = (
+                    workout.calories_burned or WORKOUT_DEFAULT_BURNED_CALORIES
+                )
+                stats_row = (
+                    BurnedCaloriesTracker.objects.select_for_update()
+                    .filter(user=request.user, date=target_date)
+                    .first()
+                )
+                if stats_row:
+                    stats_row.calories_burned = max(
+                        0,
+                        stats_row.calories_burned - calories_to_remove,
+                    )
+                    stats_row.save(update_fields=["calories_burned"])
 
     if _wants_json(request) or request.content_type == "application/json":
         return JsonResponse(
@@ -487,11 +521,13 @@ def workouts_week_stats_api(request):
     week_end = week_start + timedelta(days=6)
 
     rows = (
-        WorkoutTracker.objects.filter(user=request.user, date__range=(week_start, week_end))
+        BurnedCaloriesTracker.objects.filter(
+            user=request.user, date__range=(week_start, week_end)
+        )
         .values("date")
         .annotate(
             burned_calories=Coalesce(
-                Sum("workout__calories_burned"),
+                Sum("calories_burned"),
                 Value(0, output_field=IntegerField()),
             )
         )
@@ -513,6 +549,7 @@ def workouts_week_stats_api(request):
                     "backgroundColor": "#17a2b8",
                 }
             ],
+            "total_burned_calories": sum(data),
             "week_start": week_start.isoformat(),
             "week_end": week_end.isoformat(),
         }
@@ -871,7 +908,7 @@ def admin_workouts_api(request):
     item = Workout.objects.create(
         name=name,
         duration_minutes=val,
-        calories_burned=max(0, val * 6),
+        calories_burned=Workout.DEFAULT_BURNED_CALORIES,
         category=Workout.Category.STRENGTH,
         difficulty_level=Workout.Difficulty.BEGINNER,
         created_by=request.user,

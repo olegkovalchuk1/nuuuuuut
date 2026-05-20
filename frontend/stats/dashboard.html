@@ -267,7 +267,10 @@
                 },
             },
         });
-        setText("workouts-meta", `${payload.week_start} - ${payload.week_end}`);
+        setText(
+            "workouts-meta",
+            `${payload.week_start} - ${payload.week_end} | ${payload.total_burned_calories ?? 0} ккал`
+        );
     }
 
     async function renderWaterChart() {

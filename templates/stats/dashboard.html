@@ -346,7 +346,11 @@
                 scales: { y: { beginAtZero: true } },
             },
         });
-        setText("workouts-meta", `${payload.week_start || ""} - ${payload.week_end || ""}`);
+        const total = payload.total_burned_calories ?? 0;
+        setText(
+            "workouts-meta",
+            `${payload.week_start || ""} - ${payload.week_end || ""} | ${total} ккал`
+        );
     }
 
     function renderWaterChart(payload) {

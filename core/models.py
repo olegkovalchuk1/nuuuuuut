@@ -53,6 +53,19 @@ class WorkoutTracker(models.Model):
         ]
 
 
+class BurnedCaloriesTracker(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.localdate)
+    calories_burned = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "date"], name="uniq_user_burned_calories_date"
+            )
+        ]
+
+
 class WaterTracker(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.localdate)
